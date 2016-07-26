@@ -2,6 +2,7 @@
 namespace common\models;
 
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
 class User extends ActiveRecord
 {
@@ -25,6 +26,10 @@ class User extends ActiveRecord
         }else if(self::find()->where(['username'=>$this->$attribute])->andWhere(['!=','id',$this->id])->count()>0 ){
             $this->addError($attribute,'用户名已经被占用');
         }
+    }
+    public static function findIdentity($id)
+    {
+        return static::findOne(['id' => $id, 'status' => 1]);
     }
 
 /*

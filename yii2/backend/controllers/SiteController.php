@@ -55,6 +55,16 @@ class SiteController extends AdminController
       // var_dump($if_per);
 
 
+        // 当前用户的身份实例。未认证用户则为 Null 。
+        $identity = Yii::$app->user;
+        $identity = \common\models\User::findOne(['username' => 'admin1']);
+        // 登录用户
+       Yii::$app->user->login($identity);
+        $identity = Yii::$app->user->identity;
+       // var_dump($identity);
+
+
+
     }
 
     public function actionIndex()

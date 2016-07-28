@@ -15,8 +15,11 @@ return [
         'admin' => [
             'class' => 'mdm\admin\Module',
             'layout' => 'left-menu',//yii2-admin的导航菜单
-        ]
+        ],
+
     ],
+
+
     'components' => [
         'user' => [
             //不指定class类，使用默认user组件，‘class'=>'yii\web\User',来自于web\application .php配置
@@ -49,7 +52,7 @@ return [
         'allowActions' => [
             'site/*',//允许访问的节点，可自行添加
             'admin/*',//允许所有人访问admin节点及其子节点
-            'article/*'
+            "user/*",
         ]
     ],
     'params' => $params,

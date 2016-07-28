@@ -8,6 +8,55 @@ use yii;
  */
 class SiteController extends AdminController
 {
+    public function init(){
+        parent::init();
+
+        if(!$this->userId){
+            //获得当前 登录的用户id和username
+            $userId=$this->userId;
+            $userName=$this->userName;
+        }
+
+//        echo $this->userId;
+        $auth=\Yii::$app->authManager;//直接通过Yii::$app调用Component组件
+        //添加一个 Role //createRole(‘role 的名称’)
+//        $role = $auth->createRole("test");
+//        $role -> description ="test";
+//        $auth -> add($role);
+//        $perm = $auth->createPermission("test111");
+//        $perm -> description ="test add operate ";
+//        $auth -> add($perm);
+
+        $oneRole=$auth->getRole('test');
+        $allRole = $auth->getRoles();
+       // $auth->assign( $oneRole ,26 );
+
+        //添加一个Rule
+        $testRule=new \backend\rbac\TestRule();
+       // $auth->add($testRule);
+        //读取一个Rule
+        $ruleName='testRule';
+        $auth->getRule($ruleName);
+        //var_dump($auth->getRules());
+
+        $onePerm = $auth->getPermission('test-add');
+        $onePerm->ruleName = 'testRule';
+       //$auth->update($onePerm->name , $onePerm) ;
+
+        //假设，查询出来的文章
+        $findArticle=['article'=>['user_id'=>22]];
+        //var_dump($auth->checkAccess(22,'demo-update',['article'=>['user_id'=>22]]));die();
+ //       var_dump($auth->checkAccess(22,'demo-update',$findArticle));die();
+       // $auth -> checkAccess(26 ,'test-add' , ['article' => ['uid' => 26]]);
+        //读取 id 为 26 用户所拥有的 Permission
+        $per=$auth->getPermissionsByUser($this->userId);
+        //var_dump($per);
+        $if_per=$auth -> checkAccess($this->userId ,"site");
+      // var_dump($if_per);
+
+
+    }
+
     public function actionIndex()
     {
         return $this->renderPartial('index');

@@ -19,6 +19,8 @@ return [
     ],
     'components' => [
         'user' => [
+            //不指定class类，使用默认user组件，‘class'=>'yii\web\User',来自于web\application .php配置
+            'class'=>'yii\web\User',
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
         ],
@@ -41,21 +43,13 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            ],
-        ],
-        */
     ],
     'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
             'site/*',//允许访问的节点，可自行添加
             'admin/*',//允许所有人访问admin节点及其子节点
-            '*',
+            'article/*'
         ]
     ],
     'params' => $params,

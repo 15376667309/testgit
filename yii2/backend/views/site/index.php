@@ -31,7 +31,7 @@ use yii\helpers\Url;
 <header id="header">
     <h1 class="header-box">Smister后台管理</h1>
     <div class="header-right header-box">
-        <span>您好，admin</span> | <a href="#">浏览网站</a> | <a href="#">安全退出</a>
+        <span>您好，admin</span> | <a href="<?=Yii::getAlias('@frontendUrl')?>/web/" target="_blank">浏览网站</a> | <a href="<?=Url::to(['site/logout'])?>">安全退出</a>
     </div>
 </header>
 <div id="content">

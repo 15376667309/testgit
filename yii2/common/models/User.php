@@ -4,7 +4,7 @@ namespace common\models;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class User extends ActiveRecord
+class User extends ActiveRecord  implements \yii\web\IdentityInterface
 {
     const SUPER_ID=10;
     public static function tableName()
@@ -16,7 +16,8 @@ class User extends ActiveRecord
         return [
             ['username','checkName','skipOnEmpty'=>false],
             ['password','string','min'=>6,'tooShort'=>'密码长度不能小于6位','skipOnEmpty'=>false,'when'=>function($model){return ($model->isNewRecord || $model->password !='');}],
-            ['status','in','range'=>[0,1],'message'=>'非法操作']
+            ['status','in','range'=>[0,1],'message'=>'非法操作'],
+            ['id','safe']
         ];
     }
     public function checkName($attribute,$params){
@@ -31,6 +32,30 @@ class User extends ActiveRecord
     {
         return static::findOne(['id' => $id, 'status' => 1]);
     }
+    public static function findIdentityByAccessToken($token,$type=null){
+        return static::findOne(['accessToken'=>$token]);
+    }
+
+    public static function findByUsername($username){     //①
+        return static::findOne(['username'=>$username]);
+    }
+
+    public function getId(){
+        return $this->id;
+    }
+
+    public function getAuthkey(){
+        return $this->auth_key;
+    }
+
+    public function validateAuthKey($authKey){
+        return $this->auth_key === $authKey;
+    }
+
+    public function validatePassword($password){          //②
+        return $this->password === md5($password);
+    }
+
 
 /*
  * beforeSave 在多个model save时，要慎重使用

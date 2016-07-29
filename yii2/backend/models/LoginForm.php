@@ -17,8 +17,8 @@ class LoginForm extends Model{
     public $remember;
     public $user;
 
-    const BACKEND_ID='backend_id';
-    const BACKEND_USERNAME='backend_username';
+    const BACKEND_ID='__id';
+    const BACKEND_USERNAME='__username';
     const BACKEND_COOKIE='backend_remember';
 
 

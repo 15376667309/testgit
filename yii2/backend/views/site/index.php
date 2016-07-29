@@ -31,7 +31,7 @@ use yii\helpers\Url;
 <header id="header">
     <h1 class="header-box">Smister后台管理</h1>
     <div class="header-right header-box">
-        <span>您好，admin</span> | <a href="<?=Yii::getAlias('@frontendUrl')?>/web/" target="_blank">浏览网站</a> | <a href="<?=Url::to(['site/logout'])?>">安全退出</a>
+        <span>您好，<?=$user;?></span> | <a href="<?=Yii::getAlias('@frontendUrl')?>/web/" target="_blank">浏览网站</a> | <a href="<?=Url::to(['site/logout'])?>">安全退出</a>
     </div>
 </header>
 <div id="content">
@@ -39,23 +39,21 @@ use yii\helpers\Url;
         <li><a href="#"><span class="icon icon-home"></span>首页</a></li>
         <li><a href="#"><span class="icon icon-person"></span>个人中心</a></li>
         <li>
-            <a href="#"><span class="icon icon-message"></span>前台设置</a>
+            <a href="<?=Url::to(['setting/index'])?>" target="main"><span class="icon icon-message"></span>网站设置</a>
         </li>
         <li>
             <a href="#"><span class="icon icon-start"></span>内容管理</a>
             <ul>
                 <li><a href="<?=Url::to(['category/index'])?>" target="main">文章分类</a></li>
                 <li><a href="<?=Url::to(['article/index'])?>" target="main">文章列表</a></li>
-                <li><a href="<?=Url::to(['user/index'])?>" target="main">用户列表</a></li>
-                <li><a href="#">表单页面</a></li>
+
             </ul>
         </li>
         <li>
-            <a href="#"><span class="icon icon-setting"></span>系统设置</a>
+            <a href="#"><span class="icon icon-setting"></span>用户管理</a>
             <ul>
-                <li><a href="<?=Url::to(['user/index'])?>" target="main">用户管理</a></li>
-                <li><a href="#">文章设置</a></li>
-                <li><a href="#">文章设置</a></li>
+                <li><a href="<?=Url::to(['user/index'])?>" target="main">用户列表</a></li>
+                <li><a href="<?=Url::to(['admin/'])?>" target="main">权限控制</a></li>
             </ul>
         </li>
     </ul>

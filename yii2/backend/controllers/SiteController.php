@@ -45,31 +45,37 @@ class SiteController extends AdminController
 
         //假设，查询出来的文章
         $findArticle=['article'=>['user_id'=>22]];
-        //var_dump($auth->checkAccess(22,'demo-update',['article'=>['user_id'=>22]]));die();
+ //       var_dump($auth->checkAccess(22,'demo-update',['article'=>['user_id'=>22]]));die();
  //       var_dump($auth->checkAccess(22,'demo-update',$findArticle));die();
-       // $auth -> checkAccess(26 ,'test-add' , ['article' => ['uid' => 26]]);
         //读取 id 为 26 用户所拥有的 Permission
-        $per=$auth->getPermissionsByUser($this->userId);
+  //      $per=$auth->getPermissionsByUser($this->userId);
         //var_dump($per);
-        $if_per=$auth -> checkAccess($this->userId ,"site");
+   //     $if_per=$auth -> checkAccess($this->userId ,"site");
       // var_dump($if_per);
 
 
         // 当前用户的身份实例。未认证用户则为 Null 。
-        $identity = Yii::$app->user;
+        $identity = Yii::$app->user;//有的是yii user组件里边中登录的用户
+
+        //当前用户的身份实例,自己实现的登录里边的user
+        $userId=$this->userId;
+        $userName=$this->userName;
+
         $identity = \common\models\User::findOne(['username' => 'admin1']);
         // 登录用户
-       Yii::$app->user->login($identity);
+       // Yii::$app->user->login($identity);
+       //Yii::$app->user->logout();
         $identity = Yii::$app->user->identity;
        // var_dump($identity);
-
 
 
     }
 
     public function actionIndex()
     {
-        return $this->renderPartial('index');
+        $user=$this->userName;
+
+        return $this->renderPartial('index',['user'=>$user]);
     }
     public function actionMain()
     {

@@ -21,7 +21,8 @@ class Article extends ActiveRecord{
             ['image','string','max'=>255,'tooLong'=>'图片长度过长'],
             ['author','string','max'=>100,'tooLong'=>'作者不能超过100'],
             [['count','up','down','sort_order'],'integer','min'=>0,'message'=>'请输入一个大于0的正整数','tooSmall'=>'请输入一个大于0的正,整数'],
-            ['status','in','range'=>[0,1],'message'=>'非法操作']
+            ['status','in','range'=>[0,1],'message'=>'非法操作'],
+            ['user_id','integer','min'=>'0','tooSmall'=>'非法用户','用户ID不正确']
             ];
     }
 

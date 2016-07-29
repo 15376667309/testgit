@@ -35,17 +35,17 @@ class SiteController extends AdminController
         $testRule=new \backend\rbac\TestRule();
        // $auth->add($testRule);
         //读取一个Rule
-        $ruleName='testRule';
-        $auth->getRule($ruleName);
+ //       $ruleName='testRule';
+ //       $auth->getRule($ruleName);
         //var_dump($auth->getRules());
 
-        $onePerm = $auth->getPermission('test-add');
-        $onePerm->ruleName = 'testRule';
+  //      $onePerm = $auth->getPermission('test-add');
+ //       $onePerm->ruleName = 'testRule';
        //$auth->update($onePerm->name , $onePerm) ;
 
         //假设，查询出来的文章
-        $findArticle=['article'=>['user_id'=>22]];
- //       var_dump($auth->checkAccess(22,'demo-update',['article'=>['user_id'=>22]]));die();
+//        $findArticle=['article'=>['user_id'=>22]];
+//        var_dump($auth->checkAccess(22,'article',['article'=>['user_id'=>22]]));die();
  //       var_dump($auth->checkAccess(22,'demo-update',$findArticle));die();
         //读取 id 为 26 用户所拥有的 Permission
   //      $per=$auth->getPermissionsByUser($this->userId);
@@ -55,13 +55,15 @@ class SiteController extends AdminController
 
 
         // 当前用户的身份实例。未认证用户则为 Null 。
-        $identity = Yii::$app->user;//有的是yii user组件里边中登录的用户
+
+        $user = Yii::$app->user->identity;//有的是yii user组件里边中登录的用户
+        $user = Yii::$app->user->getId();//有的是yii user组件里边中登录的用户
 
         //当前用户的身份实例,自己实现的登录里边的user
-        $userId=$this->userId;
-        $userName=$this->userName;
+       //     $userId=$this->userId;
+       //    $userName=$this->userName;
 
-        $identity = \common\models\User::findOne(['username' => 'admin1']);
+      //  $identity = \common\models\User::findOne(['username' => 'admin1']);
         // 登录用户
        // Yii::$app->user->login($identity);
        //Yii::$app->user->logout();

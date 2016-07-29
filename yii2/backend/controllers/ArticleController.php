@@ -119,6 +119,15 @@ class ArticleController extends AdminController{
     public function actionEditor($id){
         $id=(int)$id;
         $model=Article::findOne($id);
+        //获得该篇文章的作者ID
+        $user_id=$model->user_id;
+        echo $user_id,"<br>";
+        echo Yii::$app->user->getId();
+
+        //查询出来的文章
+         $findArticle=['article'=>['user_id'=>$user_id]];
+        $auth=\Yii::$app->authManager;//直接通过Yii::$app调用Component组件
+        var_dump($auth->checkAccess(Yii::$app->user->getId(),'article_edit',['article'=>['user_id'=>$user_id]]));
         if($model){
             if(Yii::$app->request->isPost && $model->load(yii::$app->request->post()) && $model->save()){
                 yii::$app->session->setFlash('success','编辑文章成功');

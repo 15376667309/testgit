@@ -53,7 +53,7 @@ $this->registerJsFile('@web/js/index-list.js',['depends'=>['backend\assets\AppAs
                 <td><?=$value['title']?></td>
                 <td><?= isset($category[$value['cid']]) ?$category[$value['cid']]['name']:'无';?></td>
                 <td><?=$value['sort_order']?></td>
-                <td><?=$value['status']==1?'禁用':'开启';?></td>
+                <td><?=$value['status']==1?'开启':'禁用';?></td>
                 <td><a href="<?=Url::to(['editor','id'=>$value['id']])?>" title="编辑" class="data_op data_edit"></a> | <a href="javascript:void(0);" title="删除" class="data_op data_delete"></a></td>
             </tr>
             <?php }?>

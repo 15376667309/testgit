@@ -101,14 +101,16 @@ class ArticleController extends AdminController{
     public function actionIndex(){
         $model= Article::find();
         $pagination=new Pagination(['totalCount'=>$model->count(),'pageSize'=>6]);
-        $result=$model->offset($pagination->offset)->limit($pagination->limit)->all();
+        $result=$model->offset($pagination->offset)->limit($pagination->limit)->orderBy('update_date desc')->all();
         return $this->render('index',['result'=>$result,'pagination'=>$pagination,'category'=>Category::getCategory()]);
     }
 
     public function  actionAdd(){
         $model=new Article();
+      //先获得当前用户的user_id;登陆的状态下
+      //  $model->user_id=yii::$app->user->getId();
         if(yii::$app->request->isPost && $model->load(yii::$app->request->post()) && $model->save()){
-            yii::$app->session->setFlash('success','添加文章分类成功');
+            yii::$app->session->setFlash('success','添加文章成功');
             return $this->redirect(['index']);
         }
 
@@ -119,21 +121,80 @@ class ArticleController extends AdminController{
     public function actionEditor($id){
         $id=(int)$id;
         $model=Article::findOne($id);
-        //获得该篇文章的作者ID
-        $user_id=$model->user_id;
-        echo $user_id,"<br>";
-        echo Yii::$app->user->getId();
+        //获得文章的用户id
+        $article_user_id=$model->user_id;
+        //获得当前用户的id
+        $user_id=Yii::$app->user->getId();
 
-        //查询出来的文章
-         $findArticle=['article'=>['user_id'=>$user_id]];
-        $auth=\Yii::$app->authManager;//直接通过Yii::$app调用Component组件
-        var_dump($auth->checkAccess(Yii::$app->user->getId(),'article_edit',['article'=>['user_id'=>$user_id]]));
-        if($model){
+
+        $auth=\Yii::$app->authManager;
+        $pers=$auth->getPermissionsByUser(\Yii::$app->user->getId());
+     //   var_dump($pers);
+        //将当前用户得所有权限名称，放到数组中
+        foreach($pers as $val){
+            $pers_name[]=$val->name;
+        }
+      //  var_dump($pers_name);
+        //初始化，当前用户是否具有修改权限$pers_if,默认为false;
+        $pers_if=false;
+        //判断当前用户是否具有修改权限
+        foreach ($pers_name as $val) {
+            if ($val == '/*' || $val == 'article') {
+                $pers_if = true;
+                break;//退出循环
+            } elseif ($val == 'article_edit') {
+                if($user_id!=$article_user_id){
+                    $pers_if = false;
+                }else{
+                    $pers_if = true;
+                }
+            } else {
+                $pers_if = false;
+            }
+        }
+
+
+        //获得该篇文章的作者ID
+//        $user_id=$model->user_id;
+//        echo '文章作者id：'.$user_id,"<br>";
+//        echo '当前用户id：'.Yii::$app->user->getId(),"<br>";
+//
+//        //查询出来的文章
+//        // $findArticle=['article'=>['user_id'=>$user_id]];
+//
+//        $auth=\Yii::$app->authManager;//直接通过Yii::$app调用Component组件
+//        $pers=$auth->getPermissionsByUser(Yii::$app->user->getId());
+//
+//        //将当前用户得所有权限名称，放到数组中
+//        foreach($pers as $val){
+//            $pers_name[]=$val->name;
+//        }
+//       // var_dump($pers_name);
+//        //初始化，当前用户是否具有修改权限$pers_if,默认为false;
+//        $pers_if=false;
+//        //判断当前用户是否具有修改权限
+//        foreach ($pers_name as $val) {
+//            if($val=='/*' || $val=='article'){
+//                $pers_if=true;
+//                break;//退出循环
+//            }elseif($val=='article_edit'){
+//                //有修改权限，但只能修改自己的article,使用rule规则验证
+//                $pers_if=$auth->checkAccess(Yii::$app->user->getId(),'article_edit',['article'=>['user_id'=>$user_id]]);
+//            }else{
+//                $pers_if=false;
+//            }
+//        }
+//        var_dump($pers_if);
+//        //var_dump($auth->checkAccess(Yii::$app->user->getId(),'article',['article'=>['user_id'=>$user_id]]));
+
+        if($model  && $pers_if){
             if(Yii::$app->request->isPost && $model->load(yii::$app->request->post()) && $model->save()){
                 yii::$app->session->setFlash('success','编辑文章成功');
                 return $this->redirect(['index']);
             }
             return $this->render('editor',['model'=>$model,'categorys'=>Category::getAllCategorys()]);
+        }else{
+            echo "非法操作";
         }
         return $this->redirect(['index']);
     }

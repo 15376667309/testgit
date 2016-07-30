@@ -22,14 +22,18 @@ class Article extends ActiveRecord{
             ['author','string','max'=>100,'tooLong'=>'作者不能超过100'],
             [['count','up','down','sort_order'],'integer','min'=>0,'message'=>'请输入一个大于0的正整数','tooSmall'=>'请输入一个大于0的正,整数'],
             ['status','in','range'=>[0,1],'message'=>'非法操作'],
-            ['user_id','integer','min'=>'0','tooSmall'=>'非法用户','用户ID不正确']
+            ['user_id','integer','min'=>'0','tooSmall'=>'非法用户',"message"=>'用户ID不正确']
             ];
     }
 
     public function beforeSave($insert){
         if(parent::beforeSave($insert)){
             $time=time();
-            if($this->isNewRecord) $this->date=$time;
+            if($this->isNewRecord){
+                $this->date=$time;
+                $user_id=\Yii::$app->user->getId();
+                $this->user_id=$user_id;
+            }
             $this->update_date=$time;
             return true;
         }

@@ -63,19 +63,21 @@ class SiteController extends AdminController
        //     $userId=$this->userId;
        //    $userName=$this->userName;
 
-      //  $identity = \common\models\User::findOne(['username' => 'admin1']);
+        $identity = \common\models\User::findOne(['username' => 'admin1']);
         // 登录用户
-       // Yii::$app->user->login($identity);
-       //Yii::$app->user->logout();
         $identity = Yii::$app->user->identity;
        // var_dump($identity);
+
+//        var_dump($_SESSION['__id']);
+//        var_dump(yii::$app->user->getId());
 
 
     }
 
     public function actionIndex()
     {
-        $user=$this->userName;
+        $identity=yii::$app->user->identity;
+        $user=$identity->username;
 
         return $this->renderPartial('index',['user'=>$user]);
     }

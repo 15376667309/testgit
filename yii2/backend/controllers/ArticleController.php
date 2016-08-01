@@ -153,40 +153,6 @@ class ArticleController extends AdminController{
             }
         }
 
-
-        //获得该篇文章的作者ID
-//        $user_id=$model->user_id;
-//        echo '文章作者id：'.$user_id,"<br>";
-//        echo '当前用户id：'.Yii::$app->user->getId(),"<br>";
-//
-//        //查询出来的文章
-//        // $findArticle=['article'=>['user_id'=>$user_id]];
-//
-//        $auth=\Yii::$app->authManager;//直接通过Yii::$app调用Component组件
-//        $pers=$auth->getPermissionsByUser(Yii::$app->user->getId());
-//
-//        //将当前用户得所有权限名称，放到数组中
-//        foreach($pers as $val){
-//            $pers_name[]=$val->name;
-//        }
-//       // var_dump($pers_name);
-//        //初始化，当前用户是否具有修改权限$pers_if,默认为false;
-//        $pers_if=false;
-//        //判断当前用户是否具有修改权限
-//        foreach ($pers_name as $val) {
-//            if($val=='/*' || $val=='article'){
-//                $pers_if=true;
-//                break;//退出循环
-//            }elseif($val=='article_edit'){
-//                //有修改权限，但只能修改自己的article,使用rule规则验证
-//                $pers_if=$auth->checkAccess(Yii::$app->user->getId(),'article_edit',['article'=>['user_id'=>$user_id]]);
-//            }else{
-//                $pers_if=false;
-//            }
-//        }
-//        var_dump($pers_if);
-//        //var_dump($auth->checkAccess(Yii::$app->user->getId(),'article',['article'=>['user_id'=>$user_id]]));
-
         if($model  && $pers_if){
             if(Yii::$app->request->isPost && $model->load(yii::$app->request->post()) && $model->save()){
                 yii::$app->session->setFlash('success','编辑文章成功');
@@ -201,12 +167,48 @@ class ArticleController extends AdminController{
 
 
     public function actionDelete(){
+        //所要删除的文章的id数组
         $selected=yii::$app->request->post('selected');
-        if(Article::deleteIn($selected)){
-            Yii::$app->session->setFlash('success','删除文章成功');
-        }else{
-            Yii::$app->session->setFlash('success','删除文章失败');
+        //获得当前用户的id
+        $user_id=\Yii::$app->user->getId();
+        $auth=\Yii::$app->authManager;
+        $pers=$auth->getPermissionsByUser($user_id);
+        //将当前用户得所有权限名称，放到数组中
+        foreach($pers as $val){
+            $pers_name[]=$val->name;
         }
-        return $this->redirect(['index']);
+        //判断是否有* 或者article权限
+        $per_if=false;
+         if(in_array("*", $pers_name) || in_array("article", $pers_name)){
+             $per_if=true;
+         }else{
+             $pers_if1=true;
+            //判断当前用户是否删除自己文章
+             if(in_array("article_del", $pers_name)) {
+                 foreach ($selected as $val1) {
+                     //查询当前文章id的用户id，并判断是否为自己所提交的文章
+                     $article = Article::findOne($val1);
+                     $article_user_id = $article->user_id;
+                     if ($article_user_id != $user_id) {
+                         $pers_if1 = false;
+                         break;
+                     }
+                 }
+             }else{
+                 $pers_if1 = false;
+             }
+         }
+
+
+        if($per_if || $pers_if1){
+            if(Article::deleteIn($selected)){
+                Yii::$app->session->setFlash('success','删除文章成功');
+            }else{
+                Yii::$app->session->setFlash('success','删除文章失败');
+            }
+            return $this->redirect(['index']);
+        }else{
+            echo "非法操作";
+        }
     }
 }

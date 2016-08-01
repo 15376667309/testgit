@@ -33,6 +33,8 @@ class Article extends ActiveRecord{
                 $this->date=$time;
                 $user_id=\Yii::$app->user->getId();
                 $this->user_id=$user_id;
+                $user_name=\Yii::$app->user->identity->username;
+                $this->username=$user_name;
             }
             $this->update_date=$time;
             return true;
